@@ -17,7 +17,11 @@
 package edu.eci.arsw.myrestaurant.restcontrollers;
 
 import com.google.gson.Gson;
-import com.sun.istack.internal.logging.Logger;
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
+import static com.google.inject.Guice.createInjector;
+import edu.eci.arsw.myrestaurant.beans.BillCalculator;
+import edu.eci.arsw.myrestaurant.beans.impl.BasicBillCalculator;
 import edu.eci.arsw.myrestaurant.model.Order;
 import edu.eci.arsw.myrestaurant.model.ProductType;
 import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
@@ -41,14 +45,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/orders")
 public class OrdersAPIController {
     private Gson data;
+    private static OrdersAPIController instance= new OrdersAPIController();
+    private static Injector injector;
     
+    public OrdersAPIController(){
+        injector = createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(BillCalculator.class).toInstance(BasicBillCalculator);
+            }
+        });
+        
+    }
+    }
     
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getOrders(){
         try{
             return new ResponseEntity<>(data,HttpStatus.ACCEPTED);
         } catch (Exception e) {
-            Logger.getLogger(OrdersAPIController.class).log(Level.SEVERE,null, e);
             return new ResponseEntity<>("Error",HttpStatus.NOT_FOUND);
         }
     }
