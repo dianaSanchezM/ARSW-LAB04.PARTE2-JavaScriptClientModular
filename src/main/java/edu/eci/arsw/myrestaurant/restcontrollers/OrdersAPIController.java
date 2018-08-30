@@ -16,6 +16,8 @@
  */
 package edu.eci.arsw.myrestaurant.restcontrollers;
 
+import com.google.gson.Gson;
+import com.sun.istack.internal.logging.Logger;
 import edu.eci.arsw.myrestaurant.model.Order;
 import edu.eci.arsw.myrestaurant.model.ProductType;
 import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
@@ -23,6 +25,7 @@ import edu.eci.arsw.myrestaurant.services.RestaurantOrderServicesStub;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +37,22 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author hcadavid
  */
+@RestController
+@RequestMapping(value = "/orders")
 public class OrdersAPIController {
-
+    private Gson data;
+    
+    
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<?> getOrders(){
+        try{
+            return new ResponseEntity<>(data,HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            Logger.getLogger(OrdersAPIController.class).log(Level.SEVERE,null, e);
+            return new ResponseEntity<>("Error",HttpStatus.NOT_FOUND);
+        }
+    }
     
 }
+
+ 
