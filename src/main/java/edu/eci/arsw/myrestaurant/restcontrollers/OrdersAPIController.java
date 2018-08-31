@@ -17,21 +17,22 @@
 package edu.eci.arsw.myrestaurant.restcontrollers;
 
 import com.google.gson.Gson;
-import com.google.inject.AbstractModule;
-import com.google.inject.Injector;
-import static com.google.inject.Guice.createInjector;
-import edu.eci.arsw.myrestaurant.beans.BillCalculator;
 import edu.eci.arsw.myrestaurant.beans.impl.BasicBillCalculator;
 import edu.eci.arsw.myrestaurant.model.Order;
 import edu.eci.arsw.myrestaurant.model.ProductType;
 import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
-import edu.eci.arsw.myrestaurant.services.RestaurantOrderServicesStub;
+import edu.eci.arsw.myrestaurant.services.RestaurantOrderServices;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,30 +42,35 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author hcadavid
  */
+@Service
 @RestController
 @RequestMapping(value = "/orders")
 public class OrdersAPIController {
-    private Gson data;
-    private static OrdersAPIController instance= new OrdersAPIController();
-    private static Injector injector;
+    @Autowired
+    RestaurantOrderServices orderServices= null;
     
-    public OrdersAPIController(){
-        injector = createInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(BillCalculator.class).toInstance(BasicBillCalculator);
-            }
-        });
-        
-    }
-    }
     
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getOrders(){
         try{
-            return new ResponseEntity<>(data,HttpStatus.ACCEPTED);
+            ArrayList<Order> orders= new ArrayList<>();
+            for (int i:orderServices.getTablesWithOrders()){
+                orders.add(orderServices.getTableOrder(i));
+            }
+            return new ResponseEntity<>(orders,HttpStatus.ACCEPTED);
         } catch (Exception e) {
+            Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, e);
             return new ResponseEntity<>("Error",HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @RequestMapping(value ="/{idmesa}")
+    public ResponseEntity<?>  getOrderById(@PathVariable("idmesa") int idMesa){
+        try{
+            return new ResponseEntity<>(orderServices.getTableOrder(idMesa),HttpStatus.ACCEPTED);
+        }catch (Exception e){
+            Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, e);
+            return new ResponseEntity<>("Order "+idMesa+" not found",HttpStatus.NOT_FOUND);
         }
     }
     
