@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-@Repository
+
 public class BasicBillCalculator implements BillCalculator {
 
 	@Override

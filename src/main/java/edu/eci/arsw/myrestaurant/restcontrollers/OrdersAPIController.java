@@ -73,7 +73,8 @@ public class OrdersAPIController {
             return new ResponseEntity<>("ERROR 404 Order "+idMesa+" not found",HttpStatus.NOT_FOUND);
         }
     }
-    
+    //curl -i -X POST -HContent-Type:application/json -HAccept:application/json http://localhost:8080/orders -d '{"orderAmountsMap":{"PIZZA":3,"HAMBURGER":2,"BEER":2}, "tableNumber":2}'
+
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<?> addOrder(@RequestBody Order newOrder){
         try {
@@ -81,10 +82,19 @@ public class OrdersAPIController {
             return new ResponseEntity<>(HttpStatus.CREATED);
 	} catch (Exception ex) {
             Logger.getLogger( OrdersAPIController.class.getName()).log(Level.SEVERE, null, ex);
-            return new ResponseEntity<>("Error: Orden no encontrada",HttpStatus.FORBIDDEN);            
+            return new ResponseEntity<>("Error: Orden no creada",HttpStatus.FORBIDDEN);            
 	}  
     }
     
+    @RequestMapping(value ="/{idmesa}/total")
+    public ResponseEntity<?>  getTotalOrder(@PathVariable("idmesa") int idMesa){
+        try{
+            return new ResponseEntity<>(orderServices.calculateTableBill(idMesa),HttpStatus.ACCEPTED);
+        }catch (Exception e){
+            Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, e);
+            return new ResponseEntity<>("ERROR 404 Order "+idMesa+" not found",HttpStatus.NOT_FOUND);
+        }
+    }
 }
 
  
