@@ -21,6 +21,7 @@ import edu.eci.arsw.myrestaurant.beans.impl.BasicBillCalculator;
 import edu.eci.arsw.myrestaurant.model.Order;
 import edu.eci.arsw.myrestaurant.model.ProductType;
 import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
+import edu.eci.arsw.myrestaurant.services.OrderServicesException;
 import edu.eci.arsw.myrestaurant.services.RestaurantOrderServices;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -95,6 +96,47 @@ public class OrdersAPIController {
             return new ResponseEntity<>("ERROR 404 Order "+idMesa+" not found",HttpStatus.NOT_FOUND);
         }
     }
+    
+    @RequestMapping(value = "/{idmesa}", method = RequestMethod.PUT)
+    public ResponseEntity<?> addAnOrdersProduct(@PathVariable("idmesa") int idmesa , @RequestBody String newProduct){
+        try{
+            if (orderServices.getTableOrder(idmesa).getOrderAmountsMap().containsKey(newProduct)){
+                int cant= orderServices.getTableOrder(idmesa).getOrderAmountsMap().get(newProduct);
+                orderServices.getTableOrder(idmesa).getOrderAmountsMap().put(newProduct, cant+1);
+            }else{
+                orderServices.getTableOrder(idmesa).addDish(newProduct, 1);
+            }
+            
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }catch(Exception e){
+            Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, e);
+            return new ResponseEntity<>("ERROR product has not be added",HttpStatus.NOT_FOUND);
+        }
+    }
+    //curl -i -X PUT -HContent-Type:application/json -HAccept:application/json http://localhost:8080/orders/3 -d 'PIZZA'
+
+    @RequestMapping(value ="/product/{productName}")
+    public ResponseEntity<?>  getProductByName(@PathVariable("productName") String name){
+        try{
+            return new ResponseEntity<>(orderServices.getProductByName(name),HttpStatus.ACCEPTED);
+        }catch (Exception e){
+            Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, e);
+            return new ResponseEntity<>("ERROR 404 Product "+name+" not found",HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{idmesa}")
+    public ResponseEntity cancelOrderByTable(@PathVariable("idmesa") int idmesa){
+        try {
+            orderServices.releaseTable(idmesa);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (OrderServicesException ex) {
+            Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("Order have not deleted",HttpStatus.NOT_FOUND);
+        }
+    }
+    //curl -i -X DELETE -HContent-Type:application/json -HAccept:application/json http://localhost:8080/orders/1 
+
 }
 
  

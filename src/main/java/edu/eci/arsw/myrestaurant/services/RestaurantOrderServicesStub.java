@@ -110,4 +110,13 @@ public class RestaurantOrderServicesStub implements RestaurantOrderServices {
         tableOrders.put(3, o2);
     }
 
+    @Override
+    public void addProduct(RestaurantProduct newProduct) throws OrderServicesException {
+         if (productsMap.containsKey(newProduct.getName())) {
+            throw new OrderServicesException("Product already recorded: " + newProduct.getName());
+        } else {
+            productsMap.put(newProduct.getName(),newProduct);
+        }
+    }
+
 }

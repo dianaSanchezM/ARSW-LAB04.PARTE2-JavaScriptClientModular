@@ -1,0 +1,1 @@
+-los clientes podrian modificar las mismas ordenes y al mismo tiempo lo que resultaria en datos erroneos al realizar las consultas y demas operaciones que ofrece el API.
