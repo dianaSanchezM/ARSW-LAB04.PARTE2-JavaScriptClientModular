@@ -70,8 +70,19 @@ public class OrdersAPIController {
             return new ResponseEntity<>(orderServices.getTableOrder(idMesa),HttpStatus.ACCEPTED);
         }catch (Exception e){
             Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, e);
-            return new ResponseEntity<>("Order "+idMesa+" not found",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("ERROR 404 Order "+idMesa+" not found",HttpStatus.NOT_FOUND);
         }
+    }
+    
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> addOrder(@RequestBody Order newOrder){
+        try {
+            orderServices.addNewOrderToTable(newOrder);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+	} catch (Exception ex) {
+            Logger.getLogger( OrdersAPIController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("Error: Orden no encontrada",HttpStatus.FORBIDDEN);            
+	}  
     }
     
 }
