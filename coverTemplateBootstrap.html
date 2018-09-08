@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="en"><
+head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,7 +17,7 @@
     <link href="coverTemplateBootstrap_files/cover.css" rel="stylesheet">
   </head>
 
-  <body class="text-center">
+  <body class="text-center" onload="addOrder();">
 
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
       <header class="masthead mb-auto">
@@ -37,33 +38,39 @@
 fullscreen background photo to make it your own.</p>
         <p class="lead">
           <table data-toggle="Order 1:">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>PIZZA</td>
-            <td>3</td>
-            <td>$10000</td>
-        </tr>
-        <tr>
-            <td>HOTDOG</td>
-            <td>1</td>
-            <td>$3000</td>
-        </tr>
-        <tr>
-            <td>COKE</td>
-            <td>4</td>
-            <td>$1300</td>
-        </tr>
-    </tbody>
-</table>
+		    <thead>
+			<tr>
+			    <th>Product</th>
+			    <th>Quantity</th>
+			    <th>Price</th>
+			</tr>
+		    </thead>
+		    <tbody>
+			<tr>
+			    <td>PIZZA</td>
+			    <td>3</td>
+			    <td>$10000</td>
+			</tr>
+			<tr>
+			    <td>HOTDOG</td>
+			    <td>1</td>
+			    <td>$3000</td>
+			</tr>
+			<tr>
+			    <td>COKE</td>
+			    <td>4</td>
+			    <td>$1300</td>
+			</tr>
+		    </tbody>
+		</table>
+		
         </p>
-      </main>
+	<p  id="Tabla">
+          
+		
+        </p>
+
+
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
@@ -80,6 +87,7 @@ fullscreen background photo to make it your own.</p>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
     <script src="coverTemplateBootstrap_files/popper.js"></script>
     <script src="coverTemplateBootstrap_files/bootstrap.js"></script>
+    <script src="./src/main/resources/OrderController.js"></script>
   
 
 </body></html>
