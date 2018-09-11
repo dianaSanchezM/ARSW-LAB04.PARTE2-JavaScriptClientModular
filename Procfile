@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes:target/classes:target/dependency/* RestapidemoApplication
+web: java -jar target/restapidemo-0.0.1-SNAPSHOT.jar
