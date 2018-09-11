@@ -1,1 +1,1 @@
-web: java -jar target/restapidemo-0.0.1-SNAPSHOT.jar
+web: java -cp target/classes/:target/dependency/* edu.eci.arsw.myrestaurant.RestapidemoApplication
