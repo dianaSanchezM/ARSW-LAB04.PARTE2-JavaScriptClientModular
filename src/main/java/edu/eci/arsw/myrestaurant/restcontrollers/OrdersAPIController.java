@@ -65,7 +65,7 @@ public class OrdersAPIController {
         }
     }
     
-    @RequestMapping(value ="/{idmesa}")
+    @RequestMapping(method = RequestMethod.GET,value ="/{idmesa}")
     public ResponseEntity<?>  getOrderById(@PathVariable("idmesa") int idMesa){
         try{
             return new ResponseEntity<>(orderServices.getTableOrder(idMesa),HttpStatus.ACCEPTED);
@@ -115,7 +115,7 @@ public class OrdersAPIController {
     }
     //curl -i -X PUT -HContent-Type:application/json -HAccept:application/json http://localhost:8080/orders/3 -d 'PIZZA'
 
-    @RequestMapping(value ="/product/{productName}")
+    @RequestMapping(method = RequestMethod.GET, value ="/product/{productName}")
     public ResponseEntity<?>  getProductByName(@PathVariable("productName") String name){
         try{
             return new ResponseEntity<>(orderServices.getProductByName(name),HttpStatus.ACCEPTED);
@@ -125,8 +125,9 @@ public class OrdersAPIController {
         }
     }
     
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{idmesa}")
-    public ResponseEntity cancelOrderByTable(@PathVariable("idmesa") int idmesa){
+    @RequestMapping(method = RequestMethod.DELETE,  value ="{idmesa}")
+    public ResponseEntity cancelOrderByTable(@PathVariable Integer idmesa){
+        System.out.println("DELETEEE");
         try {
             orderServices.releaseTable(idmesa);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
