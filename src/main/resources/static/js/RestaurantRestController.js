@@ -4,9 +4,12 @@ var RestControllerModule = (function () {
     axios.get('/orders')
             .then(function(orders){
                 callback.onSuccess(orders.data);
+                //OrdersControllerModule.showOrdersByTable();
+                console.log(orders)
             })
             .catch(function(error){
                 callback.onFailed(error);
+                console.log(error);
             });
   };
 
