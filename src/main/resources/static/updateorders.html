@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
 <html lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -16,27 +21,41 @@
     <link href="js/cover.css" rel="stylesheet">
   </head>
 
-  <body class="text-center" onload="OrdersControllerModule.showOrdersByTable();">
+  <body class="text-center" onload="OrdersControllerModule.showTablesNumber()">
 
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
       <header class="masthead mb-auto">
         <div class="inner">
           <h3 class="masthead-brand">Lab 04 - ARSW</h3>
           <nav class="nav nav-masthead justify-content-center">
-            <a class="nav-link active" href="updateorders.html">Update Orders</a>
+            <a class="nav-link active" href="index.html">Home</a>
           </nav>
         </div>
       </header>
 
       <main role="main" class="inner cover">
-        <h1 class="cover-heading">ORDENES</h1>
-        <a class="nav-link" href="#" onClick="OrdersControllerModule.addOrder()">NEW ORDER</a>
-        <a class="nav-link" href="#" onClick="OrdersControllerModule.removeOrderById(0);">DELETE ORDER</a>
+        <h1 class="cover-heading">UPDATE ORDER</h1>
+        <select id = "numTables"  onchange="OrdersControllerModule.showOrderByTable()">
+            <option value="volvo">table No.</option>
+        </select>
       </main>
-	<p  id="Tabla">
-          
-		
-        </p>
+        
+        <form >
+            Item Name: <input id="itemName" type="text" name="itemName" value="Item Name"><br>
+            Quantity: <input id="quantity" type="text" name="quantity" value="Quantity"><br>
+            
+            <button id ="boton" onclick="OrdersControllerModule.addItem(numTables.options[numTables.selectedIndex].text.split('e')[1], itemName.value.concat(' ',quantity.value))">Add</button>
+        </form>
+
+	<table id="items">
+            
+                <tr>
+                  <td>Item</td>
+                  <td>Quantity</td>
+                  <td id="update"></td>
+                  <td id="delete"></td>
+                </tr>
+        </table>
 
 	
 

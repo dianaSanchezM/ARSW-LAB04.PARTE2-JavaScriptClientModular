@@ -16,17 +16,10 @@
  */
 package edu.eci.arsw.myrestaurant.restcontrollers;
 
-import com.google.gson.Gson;
-import edu.eci.arsw.myrestaurant.beans.impl.BasicBillCalculator;
 import edu.eci.arsw.myrestaurant.model.Order;
-import edu.eci.arsw.myrestaurant.model.ProductType;
-import edu.eci.arsw.myrestaurant.model.RestaurantProduct;
-import edu.eci.arsw.myrestaurant.services.OrderServicesException;
 import edu.eci.arsw.myrestaurant.services.RestaurantOrderServices;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +47,7 @@ public class OrdersAPIController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> getOrders(){
         try{
+            
             ArrayList<Order> orders= new ArrayList<>();
             for (int i:orderServices.getTablesWithOrders()){
                 orders.add(orderServices.getTableOrder(i));
@@ -97,23 +91,27 @@ public class OrdersAPIController {
         }
     }
     
-    @RequestMapping(value = "/{idmesa}", method = RequestMethod.PUT)
-    public ResponseEntity<?> addAnOrdersProduct(@PathVariable("idmesa") int idmesa , @RequestBody String newProduct){
-        try{
-            if (orderServices.getTableOrder(idmesa).getOrderAmountsMap().containsKey(newProduct)){
-                int cant= orderServices.getTableOrder(idmesa).getOrderAmountsMap().get(newProduct);
-                orderServices.getTableOrder(idmesa).getOrderAmountsMap().put(newProduct, cant+1);
+    @RequestMapping(method = RequestMethod.PUT,  value ="{idmesa}")
+    public ResponseEntity updateAnOrdersProduct(@PathVariable int idmesa , @RequestBody Map<String, Integer> product){
+        
+        try {
+            
+            String producto = product.keySet().iterator().next();
+            if (orderServices.getTableOrder(idmesa).getDishOrderedAmount(producto)==0){
+                orderServices.getTableOrder(idmesa).addDish(producto,product.get(producto));
             }else{
-                orderServices.getTableOrder(idmesa).addDish(newProduct, 1);
+                orderServices.getTableOrder(idmesa).getOrderAmountsMap().put(producto, product.get(producto));
             }
             
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        }catch(Exception e){
-            Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, e);
-            return new ResponseEntity<>("ERROR product has not be added",HttpStatus.NOT_FOUND);
+            
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (Exception ex) {
+            Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("Item have not updated",HttpStatus.NOT_FOUND);
         }
     }
-    //curl -i -X PUT -HContent-Type:application/json -HAccept:application/json http://localhost:8080/orders/3 -d 'PIZZA'
+    
+    //curl -i -X PUT -HContent-Type:application/json -HAccept:application/json http://localhost:8080/orders/3 -d '{"PIZZA":2}'
 
     @RequestMapping(method = RequestMethod.GET, value ="/product/{productName}")
     public ResponseEntity<?>  getProductByName(@PathVariable("productName") String name){
@@ -125,18 +123,31 @@ public class OrdersAPIController {
         }
     }
     
-    @RequestMapping(method = RequestMethod.DELETE,  value ="{idmesa}")
-    public ResponseEntity cancelOrderByTable(@PathVariable Integer idmesa){
-        System.out.println("DELETEEE");
+    //curl -i -X DELETE -HContent-Type:application/json -HAccept:application/json http://localhost:8080/orders/1 
+    @RequestMapping(method = RequestMethod.DELETE,  value ="{idmesa}/{product}")
+    public ResponseEntity<?> deleteAnOrdersProduct(@PathVariable int idmesa , @PathVariable String product){
         try {
-            orderServices.releaseTable(idmesa);
+            orderServices.getTableOrder(idmesa).deleteDish(product);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch (OrderServicesException ex) {
+        } catch (Exception ex) {
+            Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("Item have not deleted",HttpStatus.NOT_FOUND);
+        }
+    }
+    //curl -i -X DELETE -HContent-Type:application/json -HAccept:application/json http://localhost:8080/orders/1 -d '{"COKE":4}'
+    
+    @RequestMapping(method = RequestMethod.DELETE,  value ="{idmesa}")
+    public ResponseEntity cancelOrderByTable(@PathVariable String idmesa){
+        
+        try {
+            orderServices.releaseTable(Integer.parseInt(idmesa));
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (Exception ex) {
             Logger.getLogger(OrdersAPIController.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>("Order have not deleted",HttpStatus.NOT_FOUND);
         }
     }
-    //curl -i -X DELETE -HContent-Type:application/json -HAccept:application/json http://localhost:8080/orders/1 
+
 
 }
 

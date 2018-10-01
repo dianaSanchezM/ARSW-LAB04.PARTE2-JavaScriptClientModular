@@ -81,6 +81,8 @@ public class RestaurantOrderServicesStub implements RestaurantOrderServices {
             return calc.calculateBill(tableOrders.get(tableNumber), productsMap);
         }
     }
+    
+    
 
     private static final Map<String, RestaurantProduct> productsMap;
 
@@ -118,5 +120,6 @@ public class RestaurantOrderServicesStub implements RestaurantOrderServices {
             productsMap.put(newProduct.getName(),newProduct);
         }
     }
+
 
 }

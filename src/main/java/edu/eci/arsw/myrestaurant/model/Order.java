@@ -43,6 +43,10 @@ public class Order {
             orderAmountsMap.put(p, previousAmount+amount);
         }
     }
+    
+    public void deleteDish(String p) {
+        orderAmountsMap.remove(p);
+    }
 
     @JsonIgnore
     public Set<String> getOrderedDishes() {
